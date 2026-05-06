@@ -1,10 +1,14 @@
+#include <iomanip>
 #include "RSA.h"
 #include <iostream>
+
 using namespace std;
+
 int main() {
     RSA rsa;
-    //cout<<rsa.quickPowMod(325,3,13)<<endl;
-    //cout<<rsa.quickMulMod(324,5,13)<<endl;
-    rsa.isPrime(13);
+    const pair<ll, ll> publicKey = rsa.getPublicKey();
+    const pair<ll, ll> privateKey = rsa.getPrivateKey();
+    cout << setw(13) << right << "Public Key: " << publicKey.first << " " << publicKey.second << endl;
+    cout << setw(13) << right << "Private Key: " << privateKey.first << " " << privateKey.second << endl;
     return 0;
 }

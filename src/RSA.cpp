@@ -5,11 +5,14 @@
 #include "RSA.h"
 #include <random>
 #include <chrono>
-#include <iostream>
 
 RSA::RSA() {
-    //this->gen_Key();
+    this->arg_n = 0;
+    this->arg_e = 0;
+    this->arg_d = 0;
+    gen_Key();
 }
+
 ll RSA::exGcd(const ll &a, const ll &b, ll &x, ll &y) {
     if (b == 0) {
         x = 1;
@@ -24,6 +27,7 @@ ll RSA::exGcd(const ll &a, const ll &b, ll &x, ll &y) {
 
     return g;
 }
+
 ll RSA::exGcd(const ll &a, const ll &b) {
     if (b == 0) {
         return a;
@@ -31,6 +35,7 @@ ll RSA::exGcd(const ll &a, const ll &b) {
     ll g = exGcd(b, a % b);
     return g;
 }
+
 ll RSA::getMulInverse(const ll &e, const ll &z) {
     ll x = 0;
     ll y = 0;
@@ -50,13 +55,12 @@ ll RSA::quickMulMod(const ll &a, const ll &b, const ll &c) {
         a_temp = (a_temp * 2) % c;
         b_temp >>= 1;
     }
-    return (res%c+c)%c;
+    return (res % c + c) % c;
 }
 
 ll RSA::quickPowMod(const ll &a, const ll &b, const ll &c) {
     ll res = 1;
     ll a_temp = a % c;
-    std::cout<<"a%c:"<<a_temp<< std::endl;
     ll b_temp = b;
     while (b_temp > 0) {
         if (b_temp & 0x01) {
@@ -65,7 +69,7 @@ ll RSA::quickPowMod(const ll &a, const ll &b, const ll &c) {
         a_temp = quickMulMod(a_temp, a_temp, c);
         b_temp >>= 1;
     }
-    return (res%c+c)%c;
+    return (res % c + c) % c;
 }
 
 bool RSA::MillerRabbin(const ll &p, const ll &a) {
@@ -75,17 +79,11 @@ bool RSA::MillerRabbin(const ll &p, const ll &a) {
         d >>= 1;
         r++;
     }
-    std::cout<<"p:"<<p<< std::endl;
-    std::cout<<"a:"<<a<< std::endl;
-    std::cout<<"d:"<<d<< std::endl;
     ll k = quickPowMod(a, d, p);
-    std::cout<<"k:"<<k<< std::endl;
-    if (k == 1) {
+    if (k == 1 || k == 0) {
         return true;
     }
     for (int i = 0; i < r; i++) {
-        std::cout<<"i:"<<i<< std::endl;
-        std::cout<<"k:"<<k<< std::endl;
         if (k == p - 1) {
             return true;
         }
@@ -102,15 +100,15 @@ bool RSA::isPrime(const unsigned long long &n) {
         return false;
     }
     bool prime_Flag = true;
-    for (ll Jim_Sinclair[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022}; ll a : Jim_Sinclair) {
+    for (ll Jim_Sinclair[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022}; ll a: Jim_Sinclair) {
         prime_Flag &= MillerRabbin(n, a);
-        std::cout<<"Flag:"<<prime_Flag<< std::endl;
         if (!prime_Flag) {
             return false;
         }
     }
     return true;
 }
+
 ll RSA::getPrimeNum() {
     std::mt19937_64 generator(std::chrono::steady_clock::now().time_since_epoch().count());
     while (true) {
@@ -120,15 +118,24 @@ ll RSA::getPrimeNum() {
         }
     }
 }
+
 void RSA::gen_Key() {
     std::mt19937_64 generator(std::chrono::steady_clock::now().time_since_epoch().count());
     const ll p = getPrimeNum();
     const ll q = getPrimeNum();
-    this->agr_n = p * q;
+    this->arg_n = p * q;
     const ll Euler_z = (p - 1) * (q - 1);
     std::uniform_int_distribution<ll> distribution(0, Euler_z);
     do {
         this->arg_e = distribution(generator);
-    }while (exGcd(this->arg_e, Euler_z)!=1);
+    } while (exGcd(this->arg_e, Euler_z) != 1);
     this->arg_d = getMulInverse(this->arg_e, Euler_z);
+}
+
+pair<ll, ll> RSA::getPublicKey() {
+    return {this->arg_e, this->arg_n};
+}
+
+pair<ll, ll> RSA::getPrivateKey() {
+    return {this->arg_d, this->arg_n};
 }
