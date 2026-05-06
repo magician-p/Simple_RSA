@@ -50,12 +50,13 @@ ll RSA::quickMulMod(const ll &a, const ll &b, const ll &c) {
         a_temp = (a_temp * 2) % c;
         b_temp >>= 1;
     }
-    return res;
+    return (res%c+c)%c;
 }
 
 ll RSA::quickPowMod(const ll &a, const ll &b, const ll &c) {
     ll res = 1;
     ll a_temp = a % c;
+    std::cout<<"a%c:"<<a_temp<< std::endl;
     ll b_temp = b;
     while (b_temp > 0) {
         if (b_temp & 0x01) {
@@ -64,7 +65,7 @@ ll RSA::quickPowMod(const ll &a, const ll &b, const ll &c) {
         a_temp = quickMulMod(a_temp, a_temp, c);
         b_temp >>= 1;
     }
-    return res;
+    return (res%c+c)%c;
 }
 
 bool RSA::MillerRabbin(const ll &p, const ll &a) {
@@ -83,10 +84,12 @@ bool RSA::MillerRabbin(const ll &p, const ll &a) {
         return true;
     }
     for (int i = 0; i < r; i++) {
-        k = quickPowMod(k, 2, p);
-        if (k == p - 1 && i!=r-1) {
+        std::cout<<"i:"<<i<< std::endl;
+        std::cout<<"k:"<<k<< std::endl;
+        if (k == p - 1) {
             return true;
         }
+        k = quickPowMod(k, 2, p);
     }
     return false;
 }
@@ -99,7 +102,7 @@ bool RSA::isPrime(const unsigned long long &n) {
         return false;
     }
     bool prime_Flag = true;
-    for (ll Jim_Sinclair[] = {2, 12, 9375, 28178, 450775, 9780504, 1795265022}; ll a : Jim_Sinclair) {
+    for (ll Jim_Sinclair[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022}; ll a : Jim_Sinclair) {
         prime_Flag &= MillerRabbin(n, a);
         std::cout<<"Flag:"<<prime_Flag<< std::endl;
         if (!prime_Flag) {
