@@ -20,9 +20,9 @@ public:
 
     pair<ll, ll> getPrivateKey();
 
-    void en_RSA(const string &plainText, vector<ll> &cipherText, const pair<ll, ll> &privateKey);
+    static void en_RSA(const string &plainText, vector<ll> &cipherText, const pair<ll, ll> &privateKey);
 
-    void de_RSA(const vector<ll> &cipherText, string &de_plainText, const pair<ll, ll> &publicKey);
+    static void de_RSA(const vector<ll> &cipherText, string &de_plainText, const pair<ll, ll> &publicKey);
 
 private:
     static ll getPrimeNum();

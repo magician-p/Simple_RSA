@@ -5,6 +5,7 @@
 #include "RSA.h"
 #include <random>
 #include <chrono>
+#include <iostream>
 
 RSA::RSA() {
     this->arg_n = 0;
@@ -138,4 +139,22 @@ pair<ll, ll> RSA::getPublicKey() {
 
 pair<ll, ll> RSA::getPrivateKey() {
     return {this->arg_d, this->arg_n};
+}
+
+void RSA::en_RSA(const string& plainText, vector<ll>& cipherText, const pair<ll, ll>& privateKey){
+    for (char str : plainText){
+        std::cout << str << std::stoll(std::to_string(str), nullptr, 10) << std::endl;
+        cipherText.push_back(quickPowMod(std::stoll(std::to_string(str), nullptr, 10), privateKey.first, privateKey.second));
+    }
+}
+
+void RSA::de_RSA(const vector<ll>& cipherText, string& de_plainText, const pair<ll, ll>& publicKey){
+    for (ll str : cipherText){
+        std::cout << 1 << std::endl;
+        char *s = lltoa(quickPowMod(str, publicKey.first, publicKey.second), nullptr, 10);
+        std::cout << str << s << std::endl;
+        //ll s = quickPowMod(str, publicKey.first, publicKey.second);
+        //std::cout << s << std::endl;
+        //de_plainText+=std::to_string(ll);
+    }
 }
