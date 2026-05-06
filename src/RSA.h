@@ -10,42 +10,40 @@ using std::vector;
 using std::pair;
 using std::string;
 
-typedef unsigned long long ll;
+typedef unsigned long long ull;
 
 class RSA {
 public:
     RSA();
 
-    pair<ll, ll> getPublicKey();
+    pair<ull, ull> getPublicKey();
 
-    pair<ll, ll> getPrivateKey();
+    pair<ull, ull> getPrivateKey();
 
-    static void en_RSA(const string &plainText, vector<ll> &cipherText, const pair<ll, ll> &privateKey);
+    static void en_RSA(const string &plainText, vector<ull> &cipherText, const pair<ull, ull> &privateKey);
 
-    static void de_RSA(const vector<ll> &cipherText, string &de_plainText, const pair<ll, ll> &publicKey);
+    static void de_RSA(const vector<ull> &cipherText, string &de_plainText, const pair<ull, ull> &publicKey);
 
 private:
-    static ll getPrimeNum();
+    static ull getPrimeNum();
 
-    ll getMulInverse(const ll &e, const ll &z);
+    ull getMulInverse(const ull &e, const ull &z);
 
-    ll exGcd(const ll &a, const ll &b, ll &x, ll &y);
+    ull exGcd(const ull &a, const ull &b, ull &x, ull &y);
 
-    ll exGcd(const ll &a, const ll &b);
+    static ull quickMulMod(const ull &a, const ull &b, const ull &c);
 
-    static ll quickMulMod(const ll &a, const ll &b, const ll &c);
+    static ull quickPowMod(const ull &a, const ull &b, const ull &c);
 
-    static ll quickPowMod(const ll &a, const ll &b, const ll &c);
+    static bool MiullerRabbin(const ull &p, const ull &a);
 
-    static bool MillerRabbin(const ll &p, const ll &a);
-
-    static bool isPrime(const ll &n);
+    static bool isPrime(const ull &n);
 
     void gen_Key();
 
-    ll arg_n;
-    ll arg_e;
-    ll arg_d;
+    ull arg_n;
+    ull arg_e;
+    ull arg_d;
 };
 
 
