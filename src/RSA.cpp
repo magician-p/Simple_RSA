@@ -73,7 +73,7 @@ bool RSA::MiullerRabbin(const ull &p, const ull &a) {
         r++;
     }
     ull k = quickPowMod(a, d, p);
-    if (k == 1) {
+    if (k == 1 || k==0) {
         return true;
     }
     for (int i = 0; i < r; i++) {
@@ -123,9 +123,9 @@ void RSA::gen_Key() {
     do {
         this->arg_e = distribution(generator);
         this->arg_d = getMulInverse(this->arg_e, Euler_z);
-        cout<<"x"<<endl;
+        //cout<<"x"<<endl;
     } while (exGcd(this->arg_e, Euler_z, x, y) != 1 || quickMulMod(this->arg_e, this->arg_d, Euler_z)!=1);
-    cout<<quickMulMod(this->arg_e, this->arg_d, Euler_z)<<endl;;
+    //cout<<quickMulMod(this->arg_e, this->arg_d, Euler_z)<<endl;;
 }
 
 pair<ull, ull> RSA::getPublicKey() {
