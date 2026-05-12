@@ -5,7 +5,6 @@
 #include "RSA.h"
 #include <random>
 #include <chrono>
-#include <iostream>
 using namespace std;
 RSA::RSA() {
     this->arg_n = 0;
