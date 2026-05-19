@@ -24,12 +24,12 @@ void savePrivateKey(const pair<ull, ull> &privateKey, const string &privateKeyFi
     fileName << privateKey.second << endl;
     fileName.close();
 }
-void en_RSA(const string &plaintextFileName, const string &privateKeyFileName, const string &ciphertextFileName) {
-    ifstream privateFile(privateKeyFileName);
+void en_RSA(const string &plaintextFileName, const string &publicKeyFileName, const string &ciphertextFileName) {
+    ifstream publicFile(publicKeyFileName);
     ifstream plainFile(plaintextFileName);
     ofstream cipherFile(ciphertextFileName);
-    if (!privateFile) {
-        cout << "Error: Can't open file " << privateKeyFileName << endl;
+    if (!publicFile) {
+        cout << "Error: Can't open file " << publicKeyFileName << endl;
         exit(0);
     }
     if (!plainFile) {
@@ -39,14 +39,14 @@ void en_RSA(const string &plaintextFileName, const string &privateKeyFileName, c
         cout << "Error: Can't open file " << ciphertextFileName << endl;
     }
 
-    pair<ull, ull> privateKey;
-    privateFile>>privateKey.first;
-    privateFile>>privateKey.second;
-    privateFile.close();
+    pair<ull, ull> publicKey;
+    publicFile>>publicKey.first;
+    publicFile>>publicKey.second;
+    publicFile.close();
 
     for (string line; getline(plainFile, line);) {
         vector<ull> cipherText;
-        RSA::en_RSA(line, cipherText, privateKey);
+        RSA::en_RSA(line, cipherText, publicKey);
         for (ull c:cipherText) {
             cipherFile << c << " ";
         }
@@ -56,16 +56,16 @@ void en_RSA(const string &plaintextFileName, const string &privateKeyFileName, c
     plainFile.close();
     cipherFile.close();
 }
-void de_RSA(const string &ciphertextFileName, const string &publicKeyFileName, const string &de_plaintextFileName) {
+void de_RSA(const string &ciphertextFileName, const string &privateKeyFileName, const string &de_plaintextFileName) {
     ifstream cipherFile(ciphertextFileName);
-    ifstream publicFile(publicKeyFileName);
+    ifstream privateFile(privateKeyFileName);
     ofstream de_plainFile(de_plaintextFileName);
     if (!cipherFile) {
         cout << "Error: Can't open file " << ciphertextFileName << endl;
         exit(0);
     }
-    if (!publicFile) {
-        cout << "Error: Can't open file " << publicKeyFileName << endl;
+    if (!privateFile) {
+        cout << "Error: Can't open file " << privateKeyFileName << endl;
         exit(0);
     }
     if (!de_plainFile) {
@@ -73,10 +73,10 @@ void de_RSA(const string &ciphertextFileName, const string &publicKeyFileName, c
         exit(0);
     }
 
-    pair<ull, ull> publicKey;
-    publicFile>>publicKey.first;
-    publicFile>>publicKey.second;
-    publicFile.close();
+    pair<ull, ull> privateKey;
+    privateFile>>privateKey.first;
+    privateFile>>privateKey.second;
+    privateFile.close();
 
     for (string line; getline(cipherFile, line); ) {
         vector<ull> ciphertext;
@@ -85,7 +85,7 @@ void de_RSA(const string &ciphertextFileName, const string &publicKeyFileName, c
             ciphertext.push_back(s);
         }
         string de_plaintext;
-        RSA::de_RSA(ciphertext, de_plaintext, publicKey);
+        RSA::de_RSA(ciphertext, de_plaintext, privateKey);
         de_plainFile << de_plaintext << endl;
     }
 
@@ -107,8 +107,8 @@ int main() {
     savePublicKey(publicKey, publicKeyFileName);
     savePrivateKey(privateKey, privateKeyFileName);
 
-    en_RSA(plaintextFileName, privateKeyFileName, ciphertextFileName);
-    de_RSA(ciphertextFileName, publicKeyFileName, de_plaintextFileName);
+    en_RSA(plaintextFileName, publicKeyFileName, ciphertextFileName);
+    de_RSA(ciphertextFileName, privateKeyFileName, de_plaintextFileName);
 
     return 0;
 }
